@@ -7,16 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Main {
-
-
-    /**
-     * 다익스트라를 진행하는데 ,
-     * 만약에 다음 노드로 가는 것들 중 제일 싼거를 찾을텐데
-     *  1. 다음걸 0 으로
-     *  2. 제일 싼 걸로
-     *  두 가지 경우를 push
-     *
-     */
+    
     static int n,e,k;
     static int minEstimate=0,maxEstimate;
     static ArrayList<ArrayList<Node>> graph = new ArrayList<>();
@@ -36,21 +27,21 @@ public class Main {
              maxEstimate = Math.max(maxEstimate,input[2]);
          }//end input
 
-        int ans=-1;
+        int ans=-1; 
 
-        while (minEstimate<=maxEstimate){
+        while (minEstimate<=maxEstimate){ //이분 탐색
             int midEstimate = (minEstimate+maxEstimate)/2;
 
-            if(isArrive(midEstimate)) {
-                ans = midEstimate;
-                maxEstimate = midEstimate - 1;
+            if(isArrive(midEstimate)) { //도달 가능하면 ans 갱신
+                ans = midEstimate; 
+                maxEstimate = midEstimate - 1; // max 추정치 범위를 좁힘
             }
             else
-                minEstimate = midEstimate + 1;
+                minEstimate = midEstimate + 1; // min 추정치 범위를 좁힘
         }
-        System.out.println(ans);
+        System.out.println(ans); // 도달 불가능이면 -1 
     }
-    static boolean isArrive(int estimate){
+    static boolean isArrive(int estimate){ // 추정치로 탐색 가능한지 탐색
 
         int[] dist = new int[n+1];
         Arrays.fill(dist,Integer.MAX_VALUE);
@@ -67,19 +58,19 @@ public class Main {
 
             for (Node next : graph.get(cur.node)) {
 
-                int nextCount=cur.weight;
+                int nextCount=cur.weight; // 공짜회선 개수
 
-                if(estimate < next.weight)
-                    nextCount++;
+                if(estimate < next.weight) // 더 비싼 회선가격이 나오면
+                    nextCount++; // 공짜 회선으로 전환
 
-                if(dist[next.node] > nextCount){
+                if(dist[next.node] > nextCount){ 
                     dist[next.node]=nextCount;
                     pq.add(new Node(next.node,nextCount));
                 }
             }
         }
 
-        return dist[n]<=k;
+        return dist[n]<=k; // 공짜회선 k개 보다 적은 개수이면 탐색 가능
     }
     static class Node {
         int node,weight;
