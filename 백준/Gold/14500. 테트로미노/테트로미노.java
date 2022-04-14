@@ -21,14 +21,13 @@ public class Main {
         for(int i=0;i<h;i++){
              map[i] = stream(br.readLine().split(" "))
                       .mapToInt(Integer::parseInt).toArray();
-//            System.out.println(Arrays.toString(map[i]));
         } // end input
 
         for(int y=0;y<h;y++){
             for(int x=0;x<w;x++){
                 visit[y][x] = true;
-                dfs(x,y,1,map[y][x]);
-                bfs(x,y);
+                dfs(x,y,1,map[y][x]); // 블록들 탐색
+                bfs(x,y); // t 블록 탐색
                 visit[y][x] = false;
             }
         }
@@ -40,7 +39,6 @@ public class Main {
     private static void dfs(int x, int y, int depth, int sum) {
 
         if(depth==4){
-            //todo
             max = Math.max(max,sum);
             return;
         }
@@ -61,7 +59,7 @@ public class Main {
 
     private static void bfs(int x, int y) {
 
-        int sum=map[y][x];
+        int sum = map[y][x];
         LinkedList<Integer> tBlocks = new LinkedList<>();
 
         for(int dir=0;dir<dx.length;dir++){
@@ -74,14 +72,14 @@ public class Main {
             tBlocks.add(map[nextY][nextX]);
             sum+=map[nextY][nextX];
         }
-        
-        if(tBlocks.size()>3){
-            for (Integer t : tBlocks) 
+
+        if(tBlocks.size()==4){ // 4방향 모두 가능 한 경우
+            for (Integer t : tBlocks)
                 max = Math.max(max,sum-t);
-        }else if(tBlocks.size()==3){
+        }else if(tBlocks.size()==3){ // 하나만 있는 경우
             max = Math.max(max,sum);
         }
-        
+
     }
 
     private static boolean isRange(int x,int y){
