@@ -1,36 +1,44 @@
+import static java.util.Arrays.*;
+import static java.util.stream.Collectors.*;
+
 import java.util.*;
- 
-public class Main {    
-    
-    public static void main(String[] args)  {
-        Scanner scan = new Scanner(System.in);
-        
-        int target = scan.nextInt();
-        int m = scan.nextInt();
-        
-        boolean[] broken = new boolean[10];
-        for(int i = 0; i < m; i++) {
-            int n = scan.nextInt();
-            broken[n] = true;
+import java.io.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+public class Main {
+
+    static int n,target;
+    static boolean[] isBroken = new boolean[10];
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        target = Integer.parseInt(br.readLine());
+        n = Integer.parseInt(br.readLine());
+        if(n!=0){
+            stream(br.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .forEach(e->isBroken[e]=true);
         }
-        
-        int result = Math.abs(target - 100); //초기값 설정
-        for(int i = 0; i <= 999999; i++) {
-            String str = String.valueOf(i);
-            int len = str.length();
-            
-            boolean isBreak = false;
-            for(int j = 0; j < len; j++) {
-                if(broken[str.charAt(j) - '0']) { //고장난 버튼을 눌러야 하면
-                    isBreak = true; 
-                    break; //더 이상 탐색하지 않고 빠져나온다.
+        //end input
+
+        int ans = Math.abs(100-target);
+
+        for(int i=0;i<=999999;i++){
+
+            String cur = Integer.toString(i);
+            boolean check=false;
+
+            for(int j=0;j<cur.length();j++){
+                if(isBroken[cur.charAt(j) - '0']){
+                    check=true; // 고장난 버튼이면 break
+                    break;
                 }
             }
-            if(!isBreak) { //i를 누를때 고장난 버튼을 누르지 않는다면
-                int min = Math.abs(target - i) + len; //i를 누른 후(len) target까지 이동하는 횟수(target - i)
-                result = Math.min(min, result);
-            }
-        }        
-        System.out.println(result);
+            if(!check) // 고장안났으면 target 까지 거리 계산해서 갱신
+                ans = Math.min(ans,cur.length()+Math.abs(i-target));
+        }
+        System.out.println(ans);
     }
 }
+
