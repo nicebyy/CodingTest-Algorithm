@@ -11,7 +11,6 @@ public class Main {
 
     static int n;
     static int[][] map;
-    static int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1}; // 우 좌 하 상
     static int ans = 0;
 
     public static void main(String[] args) throws IOException {
@@ -27,50 +26,49 @@ public class Main {
         System.out.println(ans);
     }
 
-    private static void rotate(int count) {
+    private static void rotate(int count) { // dfs 
 
-        if(count==5){
+        if(count==5){ // 5번 움직였을 때 종결
             for(int i=0;i<n;i++)
                 for(int j=0;j<n;j++)
-                    ans = Math.max(ans,map[i][j]);
+                    ans = Math.max(ans,map[i][j]); // max 값 갱신
             return;
         }
 
-        int[][] nextMap = new int[n][n];
+        int[][] nextMap = new int[n][n]; // 이전 상태로 되돌리기 위한 배열 복사
         for(int k=0;k<n;k++)
             nextMap[k] = map[k].clone();
 
-        for(int i=0;i<dx.length;i++){
+        for(int i=0;i<4;i++){ // 우,좌,하,상
             move(i);
             rotate(count+1);
             for(int k=0;k<n;k++)
-                map[k] = nextMap[k].clone();
+                map[k] = nextMap[k].clone(); // 원복
         }
     }
 
-    static void move(int dir) {
-
-
-        LinkedList<Integer> q = new LinkedList<>();
+    static void move(int dir) { // 해당 방향으로 움직이는 함수
+        
+        LinkedList<Integer> q = new LinkedList<>(); // 한번 움직임에 두 번 이상 합쳐짐을 방지하기 위한 큐
 
         if (dir == 0) { // 우
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     if (map[i][j] != 0)
-                        q.add(map[i][j]);
+                        q.add(map[i][j]); // 큐에 삽입
                     map[i][j] = 0;
                 }
 
-                int index = 0;
+                int index = 0; // 0부터 시작
                 while (!q.isEmpty()) {
                     Integer cur = q.poll();
 
-                    if (map[i][index] == 0) {
+                    if (map[i][index] == 0) { // 0 이면 큐 맨 앞 할당
                         map[i][index] = cur;
-                    } else if (map[i][index] == cur) {
+                    } else if (map[i][index] == cur) { // 앞 뒤가 같으면 합침
                         map[i][index] = cur * 2;
                         index++;
-                    } else {
+                    } else { // 단순히 움직이는 경우
                         index++;
                         map[i][index] = cur;
                     }
@@ -147,14 +145,4 @@ public class Main {
             }
         }
     }
-
-    private static void printMap(int[][] nextMap) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                System.out.print(nextMap[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
-
 }
