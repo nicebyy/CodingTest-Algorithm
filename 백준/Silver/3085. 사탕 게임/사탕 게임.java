@@ -35,22 +35,14 @@ public class Main {
     private static void swap(Point p1,Point p2) {  // 0:x 1:y
         char cur = map[p1.y][p1.x];
         char next = map[p2.y][p2.x];
-//        System.out.println("===================before==============");
-//        System.out.print("map["+p1.y+"]["+p1.x+"] = " + map[p1.y][p1.x]);
-//        System.out.println("     map["+p2.y+"]["+p2.x+"] = " + map[p2.y][p2.x]);
-
+        // swap
         map[p1.y][p1.x] = next;
         map[p2.y][p2.x] = cur;
-//        System.out.println("===================after==============");
-//        System.out.print("map["+p1.y+"]["+p1.x+"] = " + map[p1.y][p1.x]);
-//        System.out.println("     map["+p2.y+"]["+p2.x+"] = " + map[p2.y][p2.x]);
-
-        search();
+        search(); // 연속 되는 사탕 찾기
+        // restore
         map[p1.y][p1.x] = cur;
         map[p2.y][p2.x] = next;
-//        System.out.println("===================restore==============");
-//        System.out.print("map["+p1.y+"]["+p1.x+"] = " + map[p1.y][p1.x]);
-//        System.out.println("     map["+p2.y+"]["+p2.x+"] = " + map[p2.y][p2.x]);
+
     }
 
     private static void search() {
@@ -60,7 +52,7 @@ public class Main {
         for(int i=0;i<n;i++){ // x 방향 진행
             for(int j=0;j<n;j++){
 
-                if(isRange(j+1,i) && map[i][j]==map[i][j+1]){
+                if(isRange(j+1,i) && map[i][j]==map[i][j+1]){ // 연속으로 같으면 cnt 수 증가
                     cnt++;
                     max = Math.max(max,cnt);
                 }else{
