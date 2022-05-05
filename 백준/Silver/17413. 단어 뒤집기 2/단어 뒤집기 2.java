@@ -1,50 +1,45 @@
-import java.util.Scanner;
-import java.util.Stack;
+import static java.util.Arrays.*;
+
+import java.io.*;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Main {
 
-    static void print(Stack st) {
-        while (!st.empty()) {
-            System.out.print(st.peek());
-            st.pop();
-        }
-    }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        Stack st = new Stack();
+        String[] input = br.readLine().split("");
 
-        String s = sc.nextLine();
-        boolean check = false;
-
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '<') {
-                print(st); // <를 만나면 여태껏 저장해둔 문자열 거꾸로 출력
-                check = true;
-                System.out.print(s.charAt(i));
-            } else if (s.charAt(i) == '>') {
-                check = false;
-                System.out.print(s.charAt(i));
-            } else if (check) {
-                System.out.print(s.charAt(i));
-            }
-
-            else {
-                if (s.charAt(i) == ' ') {
-                    print(st);
-                    System.out.print(s.charAt(i));
-                }
-
-                else {
-                    st.push(s.charAt(i));
+        boolean stream=false;
+        StringBuilder sb = new StringBuilder();
+        StringBuilder reverseStr = new StringBuilder();
+        for (String s : input) {
+//            System.out.print(s);
+            if(s.equals("<")){
+                sb.append(reverseStr.reverse());
+                sb.append(s);
+                reverseStr = new StringBuilder();
+                stream=true;
+            }else if(s.equals(">")){
+                sb.append(s);
+                stream=false;
+            }else if(stream){
+                sb.append(s);
+            }else{
+                if(s.equals(" ")){
+                    sb.append(reverseStr.reverse());
+                    sb.append(s);
+                    reverseStr = new StringBuilder();
+                }else{
+                    reverseStr.append(s);
                 }
             }
-
         }
-
-        print(st);
+        sb.append(reverseStr.reverse());
+        System.out.println(sb.toString());
 
     }
-
 }
-
