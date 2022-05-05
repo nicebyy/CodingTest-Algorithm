@@ -25,24 +25,18 @@ public class Main {
 
                 Double op1 = stack.pop();
                 Double op2 = stack.pop();
-                Double result = 0.00;
-                if(ch=='+'){
-                    result = op2+op1;
-                }else if(ch=='-'){
-                    result = op2-op1;
-                }else if(ch=='/'){
-                    result = op2/op1;
-                }else if(ch=='*'){
-                    result = op2*op1;
-                }
-
+                
+                Double result = switch (ch) {
+                    case '+' -> op2 + op1;
+                    case '-' -> op2 - op1;
+                    case '/' -> op2 / op1;
+                    case '*' -> op2 * op1;
+                    default -> 0.00;
+                };
                 stack.push(result);
             }
-
         }
-
         System.out.printf("%.2f",stack.pop());
-
     }
 
     static boolean isOperator(char ch){
