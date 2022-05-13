@@ -9,59 +9,44 @@ import static java.util.Arrays.stream;
 
 public class Main {
 
-    static int aLen,bLen;
-    static ArrayList<Integer> listA;
-    static TreeSet<Integer> listB;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int tc = Integer.parseInt(br.readLine());
-        while (tc-->0){
-            int[] input = stream(br.readLine().split(" "))
-                                .mapToInt(Integer::parseInt)
-                                .toArray();
-            aLen = input[0];
-            bLen = input[1];
+        while (tc-->0){ br.readLine();
 
-            listA = stream(br.readLine().split(" "))
+            long sum = 0L;
+
+            ArrayList<Integer> listA = stream(br.readLine().split(" "))
                     .mapToInt(Integer::parseInt)
                     .boxed()
                     .collect(Collectors.toCollection(ArrayList::new));
-            listB = stream(br.readLine().split(" "))
+
+            TreeSet<Integer> setB = stream(br.readLine().split(" "))
                     .mapToInt(Integer::parseInt)
                     .boxed()
-                    .collect(Collectors.toCollection(TreeSet::new)); // criteria
-
-//            System.out.println("===========start===========");
-            long sum = 0L;
+                    .collect(Collectors.toCollection(TreeSet::new)); // 기준 Set
 
             for (Integer e : listA) {
-                
-                boolean search = listB.contains(e);
-                int result=e;
 
-                if(!search){
-                    listB.add(e);
+                int result=e; // 기준 Set 에 이미 있는 요소이면 바로 출력
 
-                    Integer lower = listB.lower(e);
-                    Integer higher = listB.higher(e);
+                if(!setB.contains(e)){ // 없는 요소이면 위치 찾기
 
-                    if(lower == null){
+                    // 추가한 요소의 앞 뒤 확인
+                    setB.add(e);
+                    Integer lower = setB.lower(e);
+                    Integer higher = setB.higher(e);
+
+                    if(lower == null) // 맨 앞자리일 경우
                         result = higher;
-                    }else if(higher==null){
+                    else if(higher==null)  // 맨 뒷자리일 경우
                         result = lower;
-                    }else{
-                        int l = Math.abs(e - lower);
-                        int h = Math.abs(e - higher);
+                    else result = Math.abs(e - lower) <= Math.abs(e - higher) ?
+                                lower : higher; // lower-e-higher >> 이 형태로 있으므로 앞 뒤 차이 계산해서 결정
 
-                        if(l<=h)
-                            result = lower;
-                        else
-                            result = higher;
-                    }
-                    listB.remove(e);
+                    setB.remove(e); // 다시 제거
                 }
-
                 sum+=(long)result;
             }
             System.out.println(sum);
