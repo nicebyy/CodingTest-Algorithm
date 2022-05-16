@@ -1,5 +1,6 @@
 import java.io.*;
 import java.lang.reflect.Array;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,25 +18,11 @@ public class Main {
         n = input[0]; k=input[1];
 
         int ans=0;
-
-        while (true){
-
-            int moreBottle=0;
-            int minBottle = n;
-
-            while (minBottle!=0){
-
-                if(minBottle%2==1)
-                    moreBottle++;
-                minBottle = minBottle/2;
-            }
-
-            if(moreBottle <= k )
-                break;
-            n++;
-            ans++;
+        
+        while (Integer.bitCount(n)>k){
+            ans+=n&(-n);
+            n+=n&(-n);
         }
-
         System.out.println(ans);
     }
 }
