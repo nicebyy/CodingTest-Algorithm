@@ -32,15 +32,13 @@ public class Main {
             arr[i] -= b;
             answer++;
 
-            if(arr[i]/c==0 && arr[i]%c>0){
-                answer += (arr[i] / c) + 1;
-            }
-            if(arr[i]/c>0 && arr[i]%c>0){
-                answer+=(arr[i]/c)+1;
-            }
-            if(arr[i] / c > 0 && arr[i] % c == 0){
-                answer += (arr[i] / c);
-            }
+            if(arr[i]<0)
+                continue;
+
+            answer+=arr[i]/c;
+
+            if(arr[i]%c>0)
+                answer++;
         }
 
         System.out.println(answer);
