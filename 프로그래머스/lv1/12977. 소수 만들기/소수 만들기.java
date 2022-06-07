@@ -1,36 +1,40 @@
+import java.util.*;
+import java.io.*;
+
 class Solution {
-   public int solution(int[] nums) {
-      int answer = 0;
-      boolean chk = false;
 
-      for (int i = 0; i < nums.length; i++) {
-         for (int j = i + 1; j < nums.length; j++) {
-            for (int k = j + 1; k < nums.length; k++) {
-               int num = nums[i] + nums[j] + nums[k]; //값을 담아
-               if (num >= 2) //경우의 수를 찾아서
-                  chk = sosu(num);
-               if (chk == true) //소수가 맞을 경우
-                  answer++; 
+    boolean[] visit;
+    boolean[] isPrime = new boolean[3000];
+    int n,ans=0;
+    public int solution(int[] nums) {
 
+        n = nums.length;
+        visit = new boolean[n];
+        Arrays.fill(isPrime,true);
+        setPrime();
+
+        for(int i=0;i<nums.length;i++){
+            for(int j=i+1;j< nums.length;j++){
+                for(int k=j+1;k< nums.length;k++){
+                    if(isPrime[nums[i]+nums[j]+nums[k]])
+                        ans++;
+                }
             }
-         }
+        }
 
-      }
-      return answer;
-   }
-   
-   public boolean sosu(int num) {
-      boolean check = true; 
-      if(num==2) { //소수일때
-         return check;
-         
-      }
-      for(int i=2; i<num; i++) { //소수가 아닐때
-         if(num%i ==0) {
-            check = false;
-            break;
-         }
-      }
-      return check;
-   }
+        return ans;
+    }
+
+    void setPrime(){
+
+        for(int i=2;i<Math.sqrt(3000);i++){
+
+            if(!isPrime[i])
+                continue;
+
+            for(int j=i*i;j<3000;j+=i){
+                isPrime[j]=false;
+            }
+        }
+    }
 }
