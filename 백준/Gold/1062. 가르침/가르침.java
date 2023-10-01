@@ -30,7 +30,7 @@ public class Main {
             return;
         }
         words = new String[n];
-        k-=5;
+        k = k-5;
         Pattern pattern = Pattern.compile("anta(.*)tica");
         for(int i=0;i<n;i++){
             Matcher matcher = pattern.matcher(br.readLine());
