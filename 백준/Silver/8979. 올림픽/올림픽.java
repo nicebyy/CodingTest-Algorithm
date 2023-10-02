@@ -14,7 +14,7 @@ public class Main {
         n = Integer.parseInt(input[0]);
         target = Integer.parseInt(input[1]);
 
-        PriorityQueue<Country> countries = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1));
+        PriorityQueue<Country> countries = new PriorityQueue<>();
         for(int i=0;i<n;i++){
             countries.add(new Country(br.readLine()));
         }
@@ -22,10 +22,11 @@ public class Main {
         int rank = 1;
         int cnt = 0;
         Country prev = countries.poll();
-        while (!countries.isEmpty()){
+
+        while (!countries.isEmpty() && target != prev.key){
 
             Country poll = countries.poll();
-
+//            System.out.println(poll);
             if(prev.compareTo(poll) == 0){
                 cnt++;
             }else{
@@ -44,10 +45,10 @@ public class Main {
     }
 
     static class Country implements Comparable<Country>{
-        int gold;
-        int silver;
-        int bronze;
-        int key;
+        Integer gold;
+        Integer silver;
+        Integer bronze;
+        Integer key;
 
         public Country(String in) {
             String[] split = in.split(" ");
@@ -59,13 +60,23 @@ public class Main {
 
         @Override
         public int compareTo(Country o) {
-            if (this.gold == o.gold) {
-                if (this.silver == o.silver) {
-                    return o.bronze - this.bronze;
+            if (Objects.equals(this.gold, o.gold)) {
+                if (Objects.equals(this.silver, o.silver)) {
+                    return o.bronze.compareTo(this.bronze);
                 }
-                return o.silver - this.silver;
+                return o.silver.compareTo(this.silver);
             }
-            return o.gold - this.gold;
+            return o.gold.compareTo(this.gold);
+        }
+
+        @Override
+        public String toString() {
+            return "Country{" +
+                    "gold=" + gold +
+                    ", silver=" + silver +
+                    ", bronze=" + bronze +
+                    ", key=" + key +
+                    '}';
         }
     }
 }
