@@ -8,14 +8,13 @@ public class Main {
 
     static ArrayList<ArrayList<Node>> list = new ArrayList<>();
     static int n,e;
-    static int[] distance;
     static int[] targetNode;
     static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) throws IOException {
         int[] input = stream(br.readLine().split(" "))
-                            .mapToInt(Integer::parseInt)
-                            .toArray();
+                .mapToInt(Integer::parseInt)
+                .toArray();
         n = input[0]; e = input[1];
 
         for(int i=0;i<=n;i++){
@@ -24,14 +23,14 @@ public class Main {
 
         for(int i=0;i<e;i++){
             input = stream(br.readLine().split(" "))
-                                .mapToInt(Integer::parseInt)
-                                .toArray();
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
             list.get(input[0]).add(new Node(input[1],input[2]));
             list.get(input[1]).add(new Node(input[0],input[2]));
         }
         targetNode = stream(br.readLine().split(" "))
-                            .mapToInt(Integer::parseInt)
-                            .toArray();
+                .mapToInt(Integer::parseInt)
+                .toArray();
 
         int[] startDistance = findShortPath(1);
         int[] targetNodeV1Distance = findShortPath(targetNode[0]);
@@ -63,7 +62,6 @@ public class Main {
         }
 
         System.out.println(result);
-//        System.out.println(Arrays.toString(distance));
     }
 
     private static int[] findShortPath(int startNode) {
