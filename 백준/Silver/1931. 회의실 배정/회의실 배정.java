@@ -1,41 +1,45 @@
-import java.io.*;
-import java.util.*;
-	 
-	public class Main {
 
-		public static void main(String[] args) throws NumberFormatException, IOException {
-	    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	    	int cnt = Integer.parseInt(br.readLine());
-	    	String input;
-	    	int[][]arr = new int[cnt][2];
-	    	for(int i=0;i<cnt;i++) {
-	    		input = br.readLine();
-	    		arr[i][0] = Integer.parseInt(input.split(" ")[0]);
-	    		arr[i][1] = Integer.parseInt(input.split(" ")[1]);
-	    	}
-	    	
-	    	Arrays.sort(arr, new Comparator<int[]>() {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 
-				@Override
-				public int compare(int[] o1, int[] o2) {
-					// TODO Auto-generated method stub
-					if(o1[1]<o2[1])
-						return -1;
-					else if(o1[1]==o2[1])
-						return o1[0]<=o2[0]? -1:1;
-					return 1;
-				}});
-				
-	    	int count = 1;
-			int[] prev = arr[0];
-			for(int i = 1; i < cnt; i++) {
-				if(prev[1] <= arr[i][0]) {
-					count++;
-					prev = arr[i];
-				}
-			}
-			System.out.println(count);
+import static java.util.Arrays.stream;
 
-	   
-   }
+public class Main {
+    static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    static int n;
+    static int[][] meetings;
+    public static void main(String[] args) throws IOException {
+
+        n = Integer.parseInt(br.readLine());
+        meetings = new int[n][2];
+
+        for(int i=0;i<n;i++){
+            meetings[i] = stream(br.readLine().split(" "))
+                                .mapToInt(Integer::parseInt)
+                                .toArray();
+        }
+
+        Arrays.sort(meetings,(o1, o2) -> o1[1] == o2[1] ? o1[0] - o2[0] : o1[1] - o2[1]);
+
+        int curTime = 0;
+        int result = 0;
+        for (int[] meeting : meetings) {
+//            System.out.println(Arrays.toString(meeting));
+            if(meeting[0] < curTime)
+                continue;
+
+            curTime = meeting[1];
+            result ++;
+//            System.out.println(curTime);
+//            System.out.println(Arrays.toString(meeting));
+        }
+
+        System.out.println(result);
+    }
+
 }
+
+
