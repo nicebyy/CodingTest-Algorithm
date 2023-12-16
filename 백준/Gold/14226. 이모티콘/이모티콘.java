@@ -18,7 +18,7 @@ public class Main {
 
         n = Integer.parseInt(br.readLine());
 
-        dp = new int[n*10][n*10];
+        dp = new int[(int) (n+Math.log(n))+1][(int) (n+Math.log(n))+1];
         for(int i=1;i<dp.length;i++)
             Arrays.fill(dp[i],Integer.MAX_VALUE);
 
