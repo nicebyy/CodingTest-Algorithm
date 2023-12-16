@@ -18,7 +18,7 @@ public class Main {
 
         n = Integer.parseInt(br.readLine());
 
-        dp = new int[10001][10001];
+        dp = new int[n*10][n*10];
         for(int i=1;i<dp.length;i++)
             Arrays.fill(dp[i],Integer.MAX_VALUE);
 
