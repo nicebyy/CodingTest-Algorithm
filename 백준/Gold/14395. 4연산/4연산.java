@@ -31,26 +31,28 @@ public class Main {
             Node cur = queue.poll();
             duplicateCheckSet.add(cur.num);
 
-            if(cur.num == target){ //ernd
+            if(cur.num == target){ //end
                 System.out.println(cur.builder.toString());
                 return;
             }
 
-            if(!duplicateCheckSet.contains(cur.num*cur.num) && MAX_RANGE >= cur.num*cur.num){
-                queue.add(new Node(cur.num*cur.num,new StringBuilder(cur.builder),0));
+            if(checkValid(cur.num*cur.num)){
+                queue.add(new Node(cur.num*cur.num,cur.builder,0));
             }
-            if(!duplicateCheckSet.contains(cur.num+cur.num) && MAX_RANGE >= cur.num+cur.num){
-                queue.add(new Node(cur.num+cur.num,new StringBuilder(cur.builder),1));
+            if(checkValid(cur.num+cur.num)){
+                queue.add(new Node(cur.num+cur.num,cur.builder,1));
             }
-            if(!duplicateCheckSet.contains(cur.num-cur.num)){
-                queue.add(new Node(cur.num-cur.num,new StringBuilder(cur.builder),2));
+            if(checkValid(0)){
+                queue.add(new Node(0,cur.builder,2));
             }
-            if(cur.num!=0 && !duplicateCheckSet.contains(cur.num/cur.num)){
-                queue.add(new Node(cur.num/cur.num,new StringBuilder(cur.builder),3));
+            if(checkValid(1)){
+                queue.add(new Node(1,cur.builder,3));
             }
         }
-
         System.out.println(-1);
+    }
+    static boolean checkValid(long nextNum){
+        return !duplicateCheckSet.contains(nextNum) && nextNum <= MAX_RANGE;
     }
     static class Node{
         long num;
@@ -62,15 +64,16 @@ public class Main {
         }
         public Node(long num,StringBuilder sb,int op) {
             this.num = num;
-
+            this.builder = new StringBuilder(sb);
+          
             if(op == 0){
-                this.builder = sb.append("*");
+                this.builder.append("*");
             }else if(op == 1){
-                this.builder = sb.append("+");
+                this.builder.append("+");
             }else if(op == 2){
-                this.builder = sb.append("=");
+                this.builder.append("=");
             }else if(op == 3){
-                this.builder = sb.append("/");
+                this.builder.append("/");
             }
         }
     }
