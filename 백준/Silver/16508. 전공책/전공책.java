@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,8 +7,8 @@ import java.util.StringTokenizer;
 
 public class Main {
     static String word;
-    static int N, min = Integer.MAX_VALUE;
-    static int[] cnt, selectCount = new int[26];
+    static int n, min = Integer.MAX_VALUE;
+    static int[] cnt;
     static ArrayList<Book> books = new ArrayList<>();
     public static void main(String[] args) throws IOException {
 
@@ -17,52 +18,59 @@ public class Main {
         for(int i = 0; i < word.length(); i++) {
             cnt[word.charAt(i) - 'A']++;
         }
-        N = Integer.parseInt(br.readLine());
+        n = Integer.parseInt(br.readLine());
         StringTokenizer st;
-        for(int i = 0; i < N; i++) {
+        for(int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             books.add(new Book(Integer.parseInt(st.nextToken()), st.nextToken()));
         }
 
-        dfs(0, 0);
-        if(min == Integer.MAX_VALUE) min = -1;
+        int[] wordCount = new int['Z'-'A'+1];
+        dfs(0, 0,wordCount);
+        
+        if(min == Integer.MAX_VALUE) {
+            min = -1;
+        }
         System.out.println(min);
 
     }
 
-    static void dfs(int idx, int total){
-        if(idx == N) {
-            if(check()) {
+    static void dfs(int cur, int total, int[] wordCount){
+        if(cur == n) {
+            if(check(wordCount)) {
                 min = Math.min(min, total);
             }
             return;
         }
-        for(int i = 0; i < books.get(idx).title.length(); i++) {
-            selectCount[books.get(idx).title.charAt(i) - 'A']++;
+
+        Book curBook = books.get(cur);
+
+        for(int i = 0; i < books.get(cur).title.length(); i++) {
+            wordCount[curBook.title.charAt(i) - 'A']++;
         }
-        dfs(idx + 1, total + books.get(idx).price);
-        for(int i = 0; i < books.get(idx).title.length(); i++) {
-            selectCount[books.get(idx).title.charAt(i) - 'A']--;
+        dfs(cur + 1, total + curBook.price,wordCount);
+        for(int i = 0; i < books.get(cur).title.length(); i++) {
+            wordCount[curBook.title.charAt(i) - 'A']--;
         }
-        dfs(idx + 1, total);
+        dfs(cur + 1, total,wordCount);
     }
 
-    static boolean check() {
-        for(int i = 0; i < 26; i++) {
-            if(cnt[i] > selectCount[i]) {
+    static boolean check(int[] wordCount) {
+        for(int i = 0; i<wordCount.length; i++) {
+            if(cnt[i] > wordCount[i]) {
                 return false;
             }
         }
         return true;
     }
-}
 
-class Book{
-    int price;
-    String title;
+    static class Book{
+        int price;
+        String title;
 
-    Book(int price, String title) {
-        this.price = price;
-        this.title = title;
+        Book(int price, String title) {
+            this.price = price;
+            this.title = title;
+        }
     }
 }
