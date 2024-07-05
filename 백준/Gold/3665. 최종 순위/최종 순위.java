@@ -64,7 +64,7 @@ public class Main {
             }
 
             StringBuilder ans = new StringBuilder();
-            if(stream(inDegree).sum() != (n-1)*n/2 || stream(rankSet).sum() != n*(n+1)/2){
+            if(stream(rankSet).sum() != n*(n+1)/2){
                 ans.append("IMPOSSIBLE");
             }else{
                 for(int i=0;i<rankSet.length-1;i++){
