@@ -1,3 +1,5 @@
+
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,14 +11,15 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String word = br.readLine();
+        char[] word = br.readLine().toCharArray();
         HashSet<String> set = new HashSet<>();
-        for(int i=0;i<word.length();i++){
+        for(int i=0;i<word.length;i++){
 
-            for(int j=i;j<=word.length();j++){
-                String substring = word.substring(i, j);
-                if(!substring.equals("")){
-                    set.add(word.substring(i,j));
+            String curWord = "";
+            for(int j=i;j<word.length;j++){
+                curWord+= word[j];
+                if(!curWord.equals("")){
+                    set.add(curWord);
                 }
             }
         }
