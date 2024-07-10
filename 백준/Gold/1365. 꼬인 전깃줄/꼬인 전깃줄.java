@@ -2,6 +2,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import static java.util.Arrays.stream;
 
@@ -16,38 +17,29 @@ public class Main {
 
         n = Integer.parseInt(br.readLine());
         arr = stream(br.readLine().split(" "))
-                            .mapToInt(Integer::parseInt)
-                            .toArray();
-        lis = new int[arr.length];
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        lis = new int[n];
+
         lis[0] = arr[0];
-        int index = 0;
-        for(int i=1;i<lis.length;i++){
+        int lisIndex = 1;
 
-            if(lis[index] < arr[i]){
-                lis[++index] = arr[i];
-            }else if(lis[index] > arr[i]){
+        for(int i=1;i<n;i++){
 
-                int start = 0;
-                int end = index;
+            if(arr[i] > lis[lisIndex-1]){
+                lis[lisIndex++] = arr[i];
+            }else{
 
-                while (start < end){
-
-                    int mid = (start + end)/2;
-
-                    if(lis[mid] < arr[i]){
-                        start = mid+1;
-                    }else{
-                        end = mid;
-                    }
+                int pos = Arrays.binarySearch(lis, 0,lisIndex,arr[i]);
+                
+                if(pos >= 0){
+                    lis[pos] = arr[i];
+                }else{
+                    lis[(-1*pos)-1] = arr[i];
                 }
-
-                lis[end] = arr[i];
             }
         }
 
-        System.out.println(n-(index+1));
-
+        System.out.println(n-lisIndex);
     }
 }
-
-
