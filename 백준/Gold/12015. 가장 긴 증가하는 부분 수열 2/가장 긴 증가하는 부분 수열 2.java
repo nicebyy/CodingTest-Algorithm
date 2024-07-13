@@ -1,60 +1,65 @@
-import java.util.Scanner;
- 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.stream;
+
 public class Main {
- 
-	public static void main(String[] args) {
- 
-		Scanner in = new Scanner(System.in);
- 
-		int N = in.nextInt();
- 
-		int[] seq = new int[N];
-		int[] LIS = new int[N];
- 
- 
-		for (int i = 0; i < N; i++) {
-			seq[i] = in.nextInt();
-		}
- 
-		// LIS 초기 값으로 첫 번째 수열의 값을 갖는다.
-		LIS[0] = seq[0];
-		int lengthOfLIS = 1;
-		
-		for (int i = 1; i < N; i++) {
- 
-			int key = seq[i];
-			
-			// 만약 key가 LIS의 마지막 값보다 클 경우 추가해준다. 
-			if (LIS[lengthOfLIS - 1] < key) {
-				lengthOfLIS++;
-				LIS[lengthOfLIS - 1] = key;
-			} 
-			else {
-				// Lower Bound 이분탐색을 진행한다.
-				int lo = 0;
-				int hi = lengthOfLIS;
-				while (lo < hi) {
-					int mid = (lo + hi) / 2;
-					
-					if(LIS[mid] < key) {
-						lo = mid + 1;
-					}
-					else {
-						hi = mid;
-					}
- 
-				}
-				/*
-				 *  lo가 LIS에서 대치 될 원소의 위치가 될 것이고
-				 *  해당 위치에 key값으로 원소를 바꿔준다.
-				 */
-				
-				LIS[lo] = key;
-			
-			}
-			
-		}
-		// 위 과정을 통해 나온 LIS의 길이를 출력한다.
-		System.out.println(lengthOfLIS);
-	}
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    public static void main(String[] args) throws IOException {
+
+        int n = Integer.parseInt(br.readLine());
+        int[] arr = stream(br.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        int[] lis = new int[n];
+
+        int index = 1;
+        lis[0] = arr[0];
+
+        for (int i = 1; i < arr.length; i++) {
+
+            int last = lis[index - 1];
+
+            if (arr[i] > last) {
+                index++;
+                lis[index - 1] = arr[i];
+            } else {
+
+                int start = 0;
+                int end = index;
+
+                while (start < end) {
+
+                    int mid = (start + end) / 2;
+
+                    if (lis[mid] < arr[i]) {
+                        start = mid+1;
+                    } else {
+                        end = mid;
+                    }
+                }
+                lis[start] = arr[i];
+            }
+        }
+
+        System.out.println(index);
+    }
+
 }
+/**
+ * 4 7 10 3 1 8 7 2 5 7
+ * <p>
+ * 4
+ * 4 7
+ * 4 7 10
+ * 3 7 10
+ * 1 7 10
+ * 2 7 8
+ */
+
