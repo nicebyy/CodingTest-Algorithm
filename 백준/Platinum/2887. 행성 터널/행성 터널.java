@@ -1,99 +1,100 @@
-import java.io.*;
-import java.util.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.stream;
 
 public class Main {
-	public static class Planet {
-		int idx;
-		int x, y, z;
-		public Planet(int idx, int x, int y, int z) {
-			this.idx = idx;
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
-	}
-	
-	public static int N;
-	public static int ans;
-	public static int[] p;
-	public static Planet[] planets;
-	public static PriorityQueue<int[]> pq;
-	
-	public static void union(int x, int y) {
-		p[findSet(y)] = p[findSet(x)];
-	}
-	public static int findSet(int x) {
-		if (p[x] == x) return x;
-		return p[x] = findSet(p[x]);
-	}
-	
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		pq = new PriorityQueue<int[]>(new Comparator<int[]>() {
-			@Override
-			public int compare(int[] o1, int[] o2) {
-				return Integer.compare(o1[2], o2[2]);
-			}
-		});
-		N = Integer.parseInt(br.readLine());
-		planets = new Planet[N];
-		p = new int[N];
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			int x = Integer.parseInt(st.nextToken());
-			int y = Integer.parseInt(st.nextToken());
-			int z = Integer.parseInt(st.nextToken());
-			planets[i] = new Planet(i, x, y, z);
-			p[i] = i;
-		}
-		
-		createEdge();
-		int cnt = 0;
-		while(!pq.isEmpty()) {
-			int[] cur = pq.poll();
-			if (findSet(cur[0]) != findSet(cur[1])){
-				ans+=cur[2];
-				if (++cnt == N-1) break;
-				union(cur[0], cur[1]);
-			}
-		}
-		
-		System.out.println(ans);
-	}
-	
-	public static void createEdge() {
-		Arrays.sort(planets, new Comparator<Planet>() {
-			@Override
-			public int compare(Planet o1, Planet o2) {
-				return Integer.compare(o1.x, o2.x);
-			}
-		});
-		for (int i = 1; i < N; i++) {
-			int dis = Math.abs(planets[i].x-planets[i-1].x);
-			pq.add(new int[] {planets[i].idx, planets[i-1].idx, dis});
-		}
-		
-		Arrays.sort(planets, new Comparator<Planet>() {
-			@Override
-			public int compare(Planet o1, Planet o2) {
-				return Integer.compare(o1.y, o2.y);
-			}
-		});
-		for (int i = 1; i < N; i++) {
-			int dis = Math.abs(planets[i].y-planets[i-1].y);
-			pq.add(new int[] {planets[i].idx, planets[i-1].idx, dis});
-		}
-		
-		Arrays.sort(planets, new Comparator<Planet>() {
-			@Override
-			public int compare(Planet o1, Planet o2) {
-				return Integer.compare(o1.z, o2.z);
-			}
-		});
-		for (int i = 1; i < N; i++) {
-			int dis = Math.abs(planets[i].z-planets[i-1].z);
-			pq.add(new int[] {planets[i].idx, planets[i-1].idx, dis});
-		}
-	}
+    static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static int n;
+    public static void main(String[] args) throws IOException {
+
+        int n = Integer.parseInt(br.readLine());
+
+
+        int[][] planets = new int[n][4];
+        ArrayList<ArrayList<Edge>> edges = new ArrayList<>();
+
+        for(int i=0;i<n;i++){
+            int[] input = stream((br.readLine()+" "+i).split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            planets[i] = input;
+            edges.add(new ArrayList<>());
+        }
+
+
+        for(int dimension=0;dimension<planets[0].length;dimension++){
+
+            Arrays.sort(planets,comparatorByD(dimension));
+
+            for(int i=0;i<planets.length-1;i++){
+
+                Edge[] edge = Edge.getEdge(planets[i], planets[i + 1]);
+
+                edges.get(edge[0].node).add(edge[1]);
+                edges.get(edge[1].node).add(edge[0]);
+            }
+        }
+
+        boolean[] visit = new boolean[n];
+
+        long totalCost = 0;
+
+        PriorityQueue<Edge> pq = new PriorityQueue<>((e1,e2)->e1.weight - e2.weight);
+
+        pq.add(new Edge(0,0));
+
+        while (!pq.isEmpty()){
+
+            Edge cur = pq.poll();
+
+            if(visit[cur.node]){
+                continue;
+            }
+
+            totalCost += cur.weight;
+            visit[cur.node] = true;
+
+            for (Edge next : edges.get(cur.node)) {
+
+                if(!visit[next.node]){
+                    pq.add(next);
+                }
+            }
+        }
+
+        System.out.println(totalCost);
+    }
+
+    static Comparator<int[]> comparatorByD(int dimension){
+        return Comparator.comparingInt(o -> o[dimension]);
+    }
+    static class Edge {
+
+        int node;
+        int weight;
+
+        public Edge(int node , int weight) {
+            this.node = node;
+            this.weight = weight;
+        }
+
+        public static Edge[] getEdge(int[] o1,int[] o2){
+            int xDiff = Math.abs(o1[0] - o2[0]);
+            int yDiff = Math.abs(o1[1] - o2[1]);
+            int zDiff = Math.abs(o1[2] - o2[2]);
+
+            int weight = Math.min(Math.min(xDiff, yDiff), zDiff);
+
+            return new Edge[]{new Edge(o1[3],weight),new Edge(o2[3],weight)};
+        }
+    }
 }
+
