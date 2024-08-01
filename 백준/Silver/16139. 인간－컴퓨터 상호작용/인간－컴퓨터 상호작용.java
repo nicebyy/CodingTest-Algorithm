@@ -16,32 +16,33 @@ public class Main {
 
         int[][] sum = new int['z' - 'a' + 1][words.length];
 
-        for (int i = 0; i < words.length; i++) {
-            sum[words[i] - 'a'][i]++;
-        }
+        sum[words[0]-'a'][0] = 1;
 
-        for(char word='a'; word<='z' ; word++){
-            int wordIndex = word-'a';
-
-            for(int i=1;i<words.length;i++){
-                sum[wordIndex][i] += sum[wordIndex][i-1];
+        for (int i = 1; i < words.length; i++) {
+            for(char word='a'; word<='z' ; word++){
+                sum[word-'a'][i] =
+                        words[i]==word?
+                        sum[word-'a'][i-1]+1 : sum[word-'a'][i-1];
             }
         }
 
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < queryCount; i++) {
             String[] query = br.readLine().split(" ");
             char queryWord = query[0].charAt(0);
+            int wordIndex = queryWord - 'a';
 
             int from = Integer.parseInt(query[1]);
             int to = Integer.parseInt(query[2]);
 
-            int result = sum[queryWord - 'a'][to] - sum[queryWord - 'a'][from];
+            int result = sum[wordIndex][to] - sum[wordIndex][from];
             if(words[from] == queryWord){
                 result++;
             }
 
-            System.out.println(result);
+            sb.append(result).append("\n");
         }
+        System.out.println(sb.toString());
     }
 
 }
