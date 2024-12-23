@@ -83,13 +83,7 @@ public class Main {
                 }
             }
         }
-
-        int waterSum = 0;
-        for(int i=1; i<=h; i++){
-            for(int j=1; j<=w; j++){
-                waterSum += diff[i][j];
-            }
-        }
+        int waterSum = stream(diff).mapToInt(row -> stream(row).sum()).sum();
         System.out.println(waterSum);
     }
     public static boolean isRange(int x,int y){
