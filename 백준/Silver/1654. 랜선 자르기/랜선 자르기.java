@@ -1,36 +1,73 @@
-import java.util.*;
-import java.io.*;
 
-public class Main{
-    static int K,N;
-    static long[] arr;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+import static java.util.Arrays.stream;
+
+public class Main {
+
+    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] input = br.readLine().split(" ");
-        K = Integer.parseInt(input[0]); N = Integer.parseInt(input[1]);
-        long max=0;
-        arr = new long[K];
-        for(int i=0;i<K;i++) {
+
+        int[] input = stream(br.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+
+        int n = input[0];
+        int target = input[1];
+
+        long[] arr = new long[n];
+
+        for(int i=0; i<n; i++){
             arr[i] = Long.parseLong(br.readLine());
-            max = Math.max(arr[i],max);
         }
+
         long left = 1;
-        long right = max;
+        long right = stream(arr).max().getAsLong()+1;
 
-        while(left<=right){
-            long mid = (right+left)/2;
+        while (left < right){
+
+            long mid = (left + right) / 2;
+
             long sum = 0;
-            for(int i=0;i<K;i++){
-                sum += arr[i]/mid;
+            for (long line : arr) {
+                sum += line / mid;
             }
-            if(sum >= N)
-                left = mid+1;
-            else
-                right = mid-1;
-        }
-        System.out.println(right);
 
+            if(target <= sum){
+                left = mid + 1;
+            }else {
+                right = mid;
+            }
+        }
+        System.out.println(right-1);
     }
 }
 
-
+/**
+ * 5 5
+ * 6
+ * 6
+ * 3
+ * 3
+ * 3
+ *
+ * 5 5
+ * 500
+ * 500
+ * 500
+ * 500
+ * 50005
+ * (10001)
+ *
+ * 5 5
+ * 2147483647
+ * 2147483647
+ * 2147483647
+ * 2147483647
+ * 2147483647
+ * (2147483647)
+ */
