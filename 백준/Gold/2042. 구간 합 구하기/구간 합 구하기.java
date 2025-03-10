@@ -2,7 +2,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 
 import static java.util.Arrays.stream;
 
@@ -19,20 +18,23 @@ public class Main {
             array[i] = Long.parseLong(br.readLine());
         }
         TreeNode root = buildTree(array, 0, array.length-1);
-
+        StringBuilder answers = new StringBuilder();
         for(int i=0; i<input[1] + input[2]; i++){
-            long[] query = stream(br.readLine().split(" "))
-                                .mapToLong(Long::parseLong)
-                                .toArray();
-            if(query[0] == 1){
-                update(root, Math.toIntExact(query[1]-1), query[2]);
-            }else{
-                long sum = getSum(root, Math.toIntExact(query[1]-1), Math.toIntExact(query[2]-1));
-                System.out.println(sum);
-            }
+            String[] queries = br.readLine().split(" ");
+            int queryType = Integer.parseInt(queries[0]);
 
-//            System.out.println(root.sum);
+            if(queryType == 1){
+                int index = Integer.parseInt(queries[1])-1;
+                long value = Long.parseLong(queries[2]);
+                update(root, index, value);
+            }else{
+                int from = Integer.parseInt(queries[1])-1;
+                int to = Integer.parseInt(queries[2])-1;
+                long sum = getSum(root, from, to);
+                answers.append(sum).append("\n");
+            }
         }
+        System.out.println(answers);
     }
 
     static void update(TreeNode node, int index, long value){
@@ -58,9 +60,9 @@ public class Main {
 
         int mid = (node.start + node.end)/2;
 
-        if(to <= mid) {
+        if(mid >= to) {
             return getSum(node.left, from, to);
-        } else if(from > mid) {
+        } else if(mid < from) {
             return getSum(node.right, from, to);
         } else {
             return getSum(node.left, from, mid) + getSum(node.right, mid+1, to);
@@ -78,7 +80,7 @@ public class Main {
             int mid = (start + end)/2;
             node.left = buildTree(array, start, mid);
             node.right = buildTree(array, mid+1, end);
-
+    
             node.sum += node.left!=null ? node.left.sum : 0;
             node.sum += node.right!= null ? node.right.sum : 0;
         }
@@ -99,16 +101,3 @@ public class Main {
         }
     }
 }
-
-/**
- * 5 2 2
- * 1
- * 2
- * 3
- * 4
- * 5
- * 1 3 6
- * 2 2 5
- * 1 5 2
- * 2 3 5
- */
