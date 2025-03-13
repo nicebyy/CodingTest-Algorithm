@@ -4,14 +4,11 @@ fun main() {
 
     val n = readln().toInt()
     val arr = readln().split(" ").map { it.toInt() }
-    val map = HashMap<Int, Int>()
-    var rank = 0
-    arr.sorted().forEach {
-        if (!map.containsKey(it)) {
-            map[it] = rank++
-        }
-    }
+    val sorted = arr.sorted().distinct()
     val sb = StringBuilder()
-    arr.map { map[it] }.forEach { sb.append("$it ") }
+
+    for (i in 0..<n){
+        sb.append(sorted.binarySearch(arr[i])).append(" ")
+    }
     println(sb.toString())
 }
