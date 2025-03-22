@@ -36,9 +36,11 @@ public class Main {
         while (tc-- > 0) {
             n = Integer.parseInt(br.readLine());
             students = br.readLine().split(" ");
-            Map<String, Long> collect = Arrays.stream(students).collect(groupingBy(i -> i, counting()));
-            Optional<Long> over3 = collect.values().stream().filter(i -> i >= 3).findAny();
-            if (over3.isPresent()) {
+            if (Arrays.stream(students)
+                    .collect(groupingBy(i -> i, counting()))
+                    .values().stream()
+                    .anyMatch(i -> i >= 3)
+            ) {
                 System.out.println(0);
                 continue;
             }
