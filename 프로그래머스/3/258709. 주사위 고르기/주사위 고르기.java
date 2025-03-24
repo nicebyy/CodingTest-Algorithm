@@ -3,114 +3,109 @@ import java.util.*;
 
 class Solution {
 
-    static int n;
-    static boolean[] visited;
-    static List<int[]> diceComb;
+    boolean[] visit;
+    Set<int[]> diceSet = new HashSet<>();
 
-    static List<Integer> scoreA;
-    static List<Integer> scoreB;
+    public int[] solution(int[][] dice) {
+        int[] answer = {};
+        visit = new boolean[dice.length];
+        getDiceComb(0,new int[dice.length/2],0,dice);
 
-    public static int[] solution(int[][] dice) {
-        n = dice.length;
-        int[] answer = new int[n / 2];
+        int maxWinCount = 0;
+        for (int[] curDice : diceSet) {
 
-        visited = new boolean[n];
-        diceComb = new ArrayList<>();
+            visit = new boolean[dice.length];
 
-        // 1. A가 뽑을 수 있는 주사위 조합 구하기
-        permutation(0, 0, new int[n / 2]);
-
-        // 2. 주사위 조합 별로 승률 계산
-        int max = Integer.MIN_VALUE;
-        for (int[] combA : diceComb) {
-            int[] combB = new int[n / 2];
-            boolean[] other = new boolean[n];
-
-            int index = 0;
-            for (int choice : combA) {
-                other[choice] = true;
+            for (int index : curDice) {
+                visit[index] = true;
             }
 
-            for (int i = 0; i < other.length; i++) {
-                if (!other[i]) {
-                    combB[index] = i;
-                    index++;
+            int[] otherDice = new int[dice.length/2];
+
+            int otherDiceIndex = 0;
+            for(int i=0;i< dice.length;i++){
+                if(!visit[i]){
+                    otherDice[otherDiceIndex] = i;
+                    otherDiceIndex++;
                 }
             }
 
-            scoreA = new ArrayList<>(); // A가 선택한 주사위의 모든 조합
-            scoreB = new ArrayList<>(); // B가 선택한 주사위의 모든 조합
+            ArrayList<Integer> scoreA = new ArrayList<>();
+            ArrayList<Integer> scoreB = new ArrayList<>();
 
-            combDice(0, combA, dice, 0, scoreA);
-            combDice(0, combB, dice, 0, scoreB);
+            getScore(0,curDice,0,dice,scoreA);
+            getScore(0,otherDice,0,dice,scoreB);
 
             Collections.sort(scoreA);
             Collections.sort(scoreB);
+            
+            int winSum = 0;
 
-            // 3. 이분탐색으로 승리 카운트 찾는다
-            int totalWinCount = 0;
+            for (Integer score : scoreA) {
 
-            // 3. 이분탐색으로 승리 카운트 찾는다
-            for (Integer a : scoreA) {
                 int left = 0;
                 int right = scoreB.size();
 
-                while (left + 1 < right) {
-                    int mid = (left + right) / 2;
+                while (left+1 < right){
 
-                    if (a > scoreB.get(mid)) {
+                    int mid = (left+right)/2;
+
+                    if(score > scoreB.get(mid)){
                         left = mid;
-                    } else {
+                    }else{
                         right = mid;
                     }
                 }
 
-                totalWinCount += left;
+                winSum += left;
             }
 
-            if (totalWinCount > max) {
-                max = totalWinCount;
-                answer = combA;
+            if(winSum > maxWinCount){
+                maxWinCount = winSum;
+                answer = curDice;
             }
 
         }
 
-        int[] answer2 = new int[n / 2];
-        if (n == 2) {
-            return new int[]{answer[0] + 1};
-        } else {
-            for (int i = 0; i < answer.length; i++) {
-                answer2[i] = answer[i] + 1;
-            }
+        for(int i=0;i<answer.length;i++){
+            answer[i]++;
         }
-
-        return answer2;
+        return answer;
     }
 
-    static void combDice(int index, int[] dices, int[][] originDices, int sum, List<Integer> team) {
-        if (index == dices.length) {
-            team.add(sum);
+    public void getDiceComb(int cur,int[] diceList,int depth,int[][] dice){
+
+        if(depth == dice.length/2){
+            diceSet.add(diceList.clone());
             return;
         }
 
-        for (int i = 0; i < 6; i++) {
-            combDice(index + 1, dices, originDices, sum + originDices[dices[index]][i], team);
+        for(int next=cur;next<dice.length;next++){
+
+            if(!visit[next]){
+                visit[next]=true;
+                diceList[depth] = next;
+                getDiceComb(next,diceList,depth+1,dice);
+                visit[next]=false;
+            }
         }
     }
 
-    static void permutation(int depth, int index, int[] arr) {
-        if (depth == n / 2) {
-            diceComb.add(arr.clone());
+    public void getScore(int curScore,int[] diceList,int depth,int[][] dice,List<Integer> diceScore){
+
+        if(depth == diceList.length){
+            diceScore.add(curScore);
             return;
         }
 
-        for (int i = index; i < n; i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                arr[depth] = i;
-                permutation(depth + 1, i + 1, arr);
-                visited[i] = false;
-            }
+        for(int i=0;i<dice[0].length;i++){
+            getScore(curScore+dice[diceList[depth]][i],diceList,depth+1,dice,diceScore);
         }
     }
 }
+
+/**
+ * 완전탐색문제;
+ * 주사위 조합 .. nCn/2
+ * 각 주사위에서 나올 수 있는 모든 경우의 수 합 6^(n/2)
+ */
