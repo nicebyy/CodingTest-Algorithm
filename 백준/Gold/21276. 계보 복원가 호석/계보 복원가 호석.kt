@@ -1,9 +1,10 @@
 import java.util.LinkedList
 import java.util.PriorityQueue
 import java.util.TreeMap
+import kotlin.collections.ArrayList
 
 var map = HashMap<String, ArrayList<String>>()
-var graph = TreeMap<String, PriorityQueue<String>>()
+var graph = TreeMap<String, ArrayList<String>>()
 var inDegree = HashMap<String, Int>()
 val answer = StringBuilder()
 fun main() = with(System.`in`.bufferedReader()) {
@@ -12,7 +13,7 @@ fun main() = with(System.`in`.bufferedReader()) {
     names.forEach { name ->
         inDegree[name] = 0
         map[name] = ArrayList()
-        graph[name] = PriorityQueue()
+        graph[name] = ArrayList()
     }
 
     val m = readLine().toInt()
@@ -44,7 +45,7 @@ fun main() = with(System.`in`.bufferedReader()) {
     answer.append("${rootList.size}\n")
         .append("${rootList.joinToString(" ")}\n")
     graph.forEach { (key, value) ->
-        answer.append("$key ${value.size} ${value.toCollection(ArrayList<String>()).joinToString(" ")}\n")
+        answer.append("$key ${value.size} ${value.sorted().joinToString(" ")}\n")
     }
     print(answer)
 }
