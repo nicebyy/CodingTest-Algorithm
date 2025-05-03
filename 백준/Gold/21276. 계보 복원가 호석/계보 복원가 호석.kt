@@ -43,7 +43,7 @@ fun main() = with(System.`in`.bufferedReader()) {
     }
 
     answer.append("${rootList.size}\n")
-        .append("${rootList.joinToString(" ")}\n")
+        .append("${rootList.sorted().joinToString(" ")}\n")
     graph.forEach { (key, value) ->
         answer.append("$key ${value.size} ${value.sorted().joinToString(" ")}\n")
     }
